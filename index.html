@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>ShadowFit: Hunter System</title>
+
+    <!-- ══ PWA Meta Tags ══ -->
+    <meta name="application-name" content="ShadowFit" />
+    <meta name="description" content="Gamified Life OS — Level Up Your Real Life" />
+    <meta name="theme-color" content="#00E5FF" />
+    <meta name="background-color" content="#050816" />
+
+    <!-- ══ Android / Chrome ══ -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- ══ iOS / Safari ══ -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ShadowFit" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+
+    <!-- ══ OG / Social Preview ══ -->
+    <meta property="og:title" content="ShadowFit: Hunter System" />
+    <meta property="og:description" content="Gamified Life OS — Fitness, Study, Code, Finance" />
+    <meta property="og:type" content="website" />
+
+    <!-- ══ Google Fonts ══ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- ══ Service Worker Registration ══ -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => {
+              console.log('[ShadowFit] SW registered:', reg.scope);
+              // Detect update available
+              reg.addEventListener('updatefound', () => {
+                const newWorker = reg.installing;
+                newWorker.addEventListener('statechange', () => {
+                  if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    console.log('[ShadowFit] Update available');
+                  }
+                });
+              });
+            })
+            .catch(err => console.warn('[ShadowFit] SW registration failed:', err));
+        });
+      }
+
+      // ══ Install Prompt (Android Chrome) ══
+      let deferredPrompt;
+      window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // Show install banner after 3 seconds
+        setTimeout(() => {
+          const banner = document.getElementById('install-banner');
+          if (banner) banner.style.display = 'flex';
+        }, 3000);
+      });
+
+      function installApp() {
+        const banner = document.getElementById('install-banner');
+        if (banner) banner.style.display = 'none';
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          deferredPrompt.userChoice.then(r => {
+            console.log('[ShadowFit] Install choice:', r.outcome);
+            deferredPrompt = null;
+          });
+        }
+      }
+
+      function dismissBanner() {
+        const banner = document.getElementById('install-banner');
+        if (banner) banner.style.display = 'none';
+      }
+
+      window.addEventListener('appinstalled', () => {
+        const banner = document.getElementById('install-banner');
+        if (banner) banner.style.display = 'none';
+        console.log('[ShadowFit] App installed!');
+      });
+    </script>
+
+    <style>
+      /* ══ Install Banner ══ */
+      #install-banner {
+        display: none;
+        position: fixed;
+        bottom: 70px;
+        left: 12px;
+        right: 12px;
+        z-index: 9999;
+        background: linear-gradient(135deg, #0c1133, #1a0a3e);
+        border: 1px solid rgba(0, 229, 255, 0.3);
+        border-radius: 14px;
+        padding: 14px 16px;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 0 30px rgba(0, 229, 255, 0.15), 0 8px 32px rgba(0,0,0,0.5);
+        backdrop-filter: blur(10px);
+        font-family: 'Rajdhani', sans-serif;
+        animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+      @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      #install-banner img { width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0; }
+      #install-banner .info { flex: 1; }
+      #install-banner .info .title { color: #00E5FF; font-size: 13px; font-weight: 700; letter-spacing: 1px; }
+      #install-banner .info .sub { color: #64748b; font-size: 11px; margin-top: 2px; }
+      #install-banner .btn-install {
+        background: linear-gradient(135deg, #00E5FF, #00b8cc);
+        color: #050816;
+        border: none;
+        border-radius: 8px;
+        padding: 8px 14px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+        cursor: pointer;
+        white-space: nowrap;
+        font-family: 'Rajdhani', sans-serif;
+      }
+      #install-banner .btn-dismiss {
+        background: transparent;
+        border: none;
+        color: #475569;
+        font-size: 18px;
+        cursor: pointer;
+        padding: 4px;
+        line-height: 1;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <!-- ══ Install Banner (shown on Android Chrome) ══ -->
+    <div id="install-banner">
+      <img src="/icon-192.png" alt="ShadowFit" />
+      <div class="info">
+        <div class="title">⬡ INSTALL SHADOWFIT</div>
+        <div class="sub">Add to home screen for offline use</div>
+      </div>
+      <button class="btn-install" onclick="installApp()">INSTALL</button>
+      <button class="btn-dismiss" onclick="dismissBanner()">✕</button>
+    </div>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
