@@ -1,0 +1,14 @@
+@import "tailwindcss";
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box;margin:0;padding:0}
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,229,255,.12);border-radius:4px}
+html{scroll-behavior:smooth}
+body{background:#050816;overflow-x:hidden;font-family:'Rajdhani',sans-serif;color:#e2e8f0}
+input,textarea,select,button{font-family:inherit}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none}
+input[type=number]{-moz-appearance:textfield}
+::selection{background:rgba(0,229,255,.2);color:#00E5FF}
+@keyframes glow-p{0%,100%{opacity:.4}50%{opacity:.9}}
+.anim-glow{animation:glow-p 2s ease-in-out infinite}
+.lc2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
